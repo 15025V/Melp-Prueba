@@ -21,7 +21,7 @@ export default function Footer() {
             <div>
               <h4 className="text-lg font-semibold mb-4">Contacto</h4>
               <p className="text-gray-300">📧 info@melp.com</p>
-              <p className="text-gray-300">📞 +52 222 123 4567</p>
+              <p className="text-gray-300">📞 +52 222 000 0000</p>
               <p className="text-gray-300">📍 Puebla, México</p>
             </div>
           </div>
