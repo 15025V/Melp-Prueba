@@ -1,9 +1,12 @@
+"use client";
+
 import { useState } from "react";
 import Link from "next/link";
 import { Restaurant } from "@/types/restaurant";
 
 export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
   const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
 
   const getRatingColor = (rating: number) => {
     if (rating >= 4.5) return "from-yellow-400 to-orange-500";
@@ -19,7 +22,16 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
     return "Regular";
   };
 
-  // Función para compartir
+  const handleLike = () => {
+    if (!liked) {
+      setLiked(true);
+      setLikeCount(likeCount + 1);
+    } else {
+      setLiked(false);
+      setLikeCount(likeCount - 1);
+    }
+  };
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -87,17 +99,17 @@ export default function RestaurantCard({ restaurant }: { restaurant: Restaurant 
         {/* Action bar: Like & Share */}
         <div className="flex justify-between items-center mt-4">
           <button
-            onClick={() => setLiked(!liked)}
-            className={`px-4 py-2 rounded-xl font-semibold transition ${
-              liked ? "bg-red-500 text-white" : "bg-gray-200 text-gray-700"
-            }`}
+            onClick={handleLike}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition ${
+              liked ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+            } hover:scale-105`}
           >
-            {liked ? "❤️ Liked" : "🤍 Like"}
+            👍 {liked ? "Liked" : "Like"} <span>{likeCount}</span>
           </button>
 
           <button
             onClick={handleShare}
-            className="px-4 py-2 rounded-xl font-semibold bg-blue-500 text-white hover:bg-blue-600 transition"
+            className="px-4 py-2 rounded-xl font-semibold bg-green-500 text-white hover:bg-green-600 transition"
           >
             🔗 Share
           </button>
