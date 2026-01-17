@@ -1,11 +1,10 @@
+import { useState } from "react";
 import Link from "next/link";
 import { Restaurant } from "@/types/restaurant";
 
-export default function RestaurantCard({
-  restaurant,
-}: {
-  restaurant: Restaurant;
-}) {
+export default function RestaurantCard({ restaurant }: { restaurant: Restaurant }) {
+  const [liked, setLiked] = useState(false);
+
   const getRatingColor = (rating: number) => {
     if (rating >= 4.5) return "from-yellow-400 to-orange-500";
     if (rating >= 4.0) return "from-green-400 to-green-600";
@@ -20,13 +19,33 @@ export default function RestaurantCard({
     return "Regular";
   };
 
+  // Función para compartir
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: restaurant.name,
+          text: `Check out ${restaurant.name}!`,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error("Error sharing:", err);
+      }
+    } else {
+      alert("Sharing not supported in this browser.");
+    }
+  };
+
   return (
     <div className="group relative bg-white border rounded-3xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2">
-
       {/* Header */}
       <div className="relative h-48 bg-gradient-to-br from-orange-100 to-pink-100 rounded-t-3xl overflow-hidden flex items-center justify-center">
-        <div className={`absolute top-4 right-4 bg-gradient-to-r ${getRatingColor(restaurant.rating)} text-white px-3 py-2 rounded-xl`}>
-          ⭐ {restaurant.rating}, {}
+        <div
+          className={`absolute top-4 right-4 bg-gradient-to-r ${getRatingColor(
+            restaurant.rating
+          )} text-white px-3 py-2 rounded-xl`}
+        >
+          ⭐ {restaurant.rating}
         </div>
 
         {restaurant.distance && (
@@ -50,7 +69,6 @@ export default function RestaurantCard({
 
         <p className="text-sm text-gray-500 mb-4">
           🌟{getRatingText(restaurant.rating)}
-
         </p>
         <p className="text-sm text-gray-700 mb-6 line-clamp-3">
           🌐{restaurant.contact?.site || "Descripción no disponible."}
@@ -65,6 +83,25 @@ export default function RestaurantCard({
         >
           Ver en el mapa
         </Link>
+
+        {/* Action bar: Like & Share */}
+        <div className="flex justify-between items-center mt-4">
+          <button
+            onClick={() => setLiked(!liked)}
+            className={`px-4 py-2 rounded-xl font-semibold transition ${
+              liked ? "bg-red-500 text-white" : "bg-gray-200 text-gray-700"
+            }`}
+          >
+            {liked ? "❤️ Liked" : "🤍 Like"}
+          </button>
+
+          <button
+            onClick={handleShare}
+            className="px-4 py-2 rounded-xl font-semibold bg-blue-500 text-white hover:bg-blue-600 transition"
+          >
+            🔗 Share
+          </button>
+        </div>
       </div>
     </div>
   );
